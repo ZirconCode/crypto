@@ -26,7 +26,7 @@ def onetrial(n):
 		return False
 	
 	for j in range(s):
-		x = Integer(x).powermod(x^2, n)
+		x = Integer(x).powermod(2, n)
 		if x == n-1:
 			return False
 		if x == 1:
