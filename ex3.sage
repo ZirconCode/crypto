@@ -1,9 +1,14 @@
+import random
 
+random.seed(14) # <- completely random number, trust me
 
+# returns true if composite
+def onetrial(n):
+	# factors = list(factor(n-1)) # hehe.... len(factors)
 
-def getRatio(n):
-	# factors = list(factor(n-1)) # haha *facepalm*
-	# s = [t[1] for t in factors if t[0] == 2][0] #probably ordered anyway...
+	
+	if( n % 2 == 0):
+		n += 1
 
 	m = n - 1
 	s = 0
@@ -13,41 +18,38 @@ def getRatio(n):
 
 	d = (n-1)/(2^s)
 
-	zns = [x for x in range(n) if gcd(x,n) == 1]
 
-	sn = []
-	for x in zns:
-		if Integer(x).powermod(d, n) == 1:
-			sn.append(x)
-		else:
-			for j in range(s):
-				if Integer(x).powermod(d*2^j, n) == mod(-1,n):
-					sn.append(x)
-					break
-	#print sn
-	return 1.0*len(sn)/len(zns)
+	x = random.randint(2,n-2)
+	x = Integer(x).powermod(d, n)
+
+	if x == 1 or x == n-1:
+		return False
+	
+	for j in range(s):
+		x = Integer(x).powermod(x^2, n)
+		if x == n-1:
+			return False
+		if x == 1:
+			return True
+
+	return True
 		
 
+# returns true if prime
+def mrtest(n,trials):
+	for i in range(trials):
+		print i,
+		if onetrial(n):
+			return False
+	return True
 
-print getRatio(655009)
-print getRatio(511229)
-# 3.06100584652117e-6
-# 0.0000206679894179894
 
+# prime if True
+print mrtest( 2^607 - 1, 150)
+print mrtest( 2^607 - 1, 75)
+# True
+# True
 
-# analysis
-
-r = range(3,1000,2)
-l = []
-
-for n in r:
-	l.append(getRatio(n))
-	print n
-
-G = scatter_plot( zip(r,l) )
-G.save('ex2plot.png')
-
-# if we compare the plot from ex1 with that from ex2 directly, 
-# we can see that of those ratios which are not prime (=1), they are much lower
-# for a medium amount of cases. Therefore it is a much better method than the one from ex1.
+# 150 are enough trials since since they are even enough for the weaker, solovay test.
+# in fact we should be able to use only 75 trials.
 
